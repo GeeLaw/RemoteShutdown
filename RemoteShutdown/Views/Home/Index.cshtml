@@ -1,0 +1,12 @@
+﻿<div class="jumbotron">
+    <h1>Remote Shutdown</h1>
+    <p class="lead">In case your Welcome Screen crashes.</p>
+    <form style="font-family: monospace;" action="/invoke" method="post">
+        <label>&nbsp;&nbsp;Domain:&nbsp;<input type="text" name="domain" /></label><br />
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;User:&nbsp;<input type="text" name="user" /></label><br />
+        <label>Password:&nbsp;<input type="password" name="password" /></label><br />
+        <label>&nbsp;&nbsp;Action:&nbsp;</label><label><input type="radio" name="action" value="restart" checked="checked" />&nbsp;Restart</label><br />
+        <label style="visibility: hidden;">&nbsp;&nbsp;Action:&nbsp;</label><label><input type="radio" name="action" value="shutdown" />&nbsp;Shutdown</label><br />
+        <input type="submit" value="Invoke" formmethod="post" />
+    </form>
+</div>
