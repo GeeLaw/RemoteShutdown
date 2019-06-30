@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using RemoteShutdown.Controllers;
 
 namespace RemoteShutdown.Controllers
 {
@@ -82,7 +79,8 @@ namespace RemoteShutdown.Controllers
                 form["domain"] = null;
                 form["user"] = null;
                 form["password"] = null;
-                form["action"] = null;
+                form["program"] = null;
+                form["arguments"] = null;
                 for (int i = 0, j = httpForm.Count; i != j; ++i)
                 {
                     var key = httpForm.GetKey(i);
@@ -119,11 +117,12 @@ namespace RemoteShutdown.Controllers
                 string domain = form["domain"].Trim();
                 string user = form["user"].Trim();
                 string password = form["password"];
-                string action = form["action"];
-                if (action != "restart" && action != "shutdown")
+                string program = form["program"];
+                string arguments = form["arguments"];
+                if (string.IsNullOrWhiteSpace(program))
                 {
                     return MakeTextualResponse(Request, HttpStatusCode.BadRequest,
-                        "Parameter \"action\" must be \"restart\" or \"shutdown\".");
+                        "Parameter \"program\" must not be empty.");
                 }
                 if (user == "")
                 {
@@ -145,19 +144,15 @@ namespace RemoteShutdown.Controllers
                 psi.PasswordInClearText = password;
                 psi.LoadUserProfile = false;
                 psi.UseShellExecute = false;
-                psi.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-                psi.FileName = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.System),
-                    "shutdown.exe");
-                psi.Arguments = (action == "shutdown"
-                    ? "/s /t 0 /f /c \"RemoteShutdown web service.\" /d u:0:5"
-                    : "/r /t 0 /f /c \"RemoteShutdown web service.\" /d u:0:5");
+                psi.WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                psi.FileName = program;
+                psi.Arguments = arguments;
                 psi.CreateNoWindow = true;
                 var ps = new Process();
                 ps.StartInfo = psi;
                 ps.Start();
                 return MakeTextualResponse(Request, HttpStatusCode.Accepted,
-                    "Started shutdown.exe with the provided credential.");
+                    "Started the program with the provided credential.");
             }
             catch (Exception ex)
             {

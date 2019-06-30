@@ -2,6 +2,8 @@
 
 Remotely shut Windows down if your Welcome Screen crashes by USB tethering your iPhone with the computer and accessing the RemoteShutdown web app via IP.
 
+**IMPORTANT** It seems that when Welcome Screen crashes, starting `shutdown.exe` will not cleanly shut Windows down. The next attempt is to first run `logoff.exe` to log off the sessions, then run `taskkill.exe /f /im lsass.exe` to force a restart. However, `logoff.exe` and `taskkill.exe` seem to not work non-interactively. The problem is to be resolved later.
+
 ## Motivation
 
 In earlier versions of Windows (e.g., 8, 8.1 and some versions of 10), when the Welcome Screen crashes (you see blank screen with pointer after flicking up the Lock Screen), you can use RD client to connect to it, which makes the Welcome Screen work again.

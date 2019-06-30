@@ -1,12 +1,31 @@
 ﻿<div class="jumbotron">
     <h1>Remote Shutdown</h1>
     <p class="lead">In case your Welcome Screen crashes.</p>
+    <p style="font-size: 1em;"><a href="javascript:void(GLSetCommandLogOut())">Log out sessions 1 to 100</a><br /><a href="javascript:void(GLSetCommandKillLsass())">Kill lsass.exe</a><br /><a href="javascript:void(GLSetCommandRestart())">Restart</a><br /><a href="javascript:void(GLSetCommandShutdown())">Shutdown</a></p>
+    <script type="text/javascript">
+        function GLSetCommandLogOut() {
+            document.querySelector('input[name=program]').value = 'cmd.exe';
+            document.querySelector('input[name=arguments]').value = '/c for /L %i in (1,1,100) do start logoff %i';
+        }
+        function GLSetCommandKillLsass() {
+            document.querySelector('input[name=program]').value = 'taskkill.exe';
+            document.querySelector('input[name=arguments]').value = '/f /im lsass.exe';
+        }
+        function GLSetCommandRestart() {
+            document.querySelector('input[name=program]').value = 'shutdown.exe';
+            document.querySelector('input[name=arguments]').value = '/r /t 0 /f /c "RemoteShutdown web service." /d u:0:5';
+        }
+        function GLSetCommandShutdown() {
+            document.querySelector('input[name=program]').value = 'shutdown.exe';
+            document.querySelector('input[name=arguments]').value = '/s /t 0 /f /c "RemoteShutdown web service." /d u:0:5';
+        }
+    </script>
     <form style="font-family: monospace;" action="/invoke" method="post">
-        <label>&nbsp;&nbsp;Domain:&nbsp;<input type="text" name="domain" /></label><br />
-        <label>&nbsp;&nbsp;&nbsp;&nbsp;User:&nbsp;<input type="text" name="user" /></label><br />
-        <label>Password:&nbsp;<input type="password" name="password" /></label><br />
-        <label>&nbsp;&nbsp;Action:&nbsp;</label><label><input type="radio" name="action" value="restart" checked="checked" />&nbsp;Restart</label><br />
-        <label style="visibility: hidden;">&nbsp;&nbsp;Action:&nbsp;</label><label><input type="radio" name="action" value="shutdown" />&nbsp;Shutdown</label><br />
+        <label>&nbsp;&nbsp;&nbsp;Domain:&nbsp;<input type="text" name="domain" /></label><br />
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User:&nbsp;<input type="text" name="user" /></label><br />
+        <label>&nbsp;Password:&nbsp;<input type="password" name="password" /></label><br />
+        <label>&nbsp;&nbsp;Program:&nbsp;<input type="text" name="program" /></label><br />
+        <label>Arguments:&nbsp;<input type="text" name="arguments" /></label><br />
         <input type="submit" value="Invoke" formmethod="post" />
     </form>
 </div>
